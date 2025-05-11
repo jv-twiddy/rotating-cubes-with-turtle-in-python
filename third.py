@@ -13,15 +13,15 @@ t.speed(0)
 def rotation(a,b,angli):    # rotates the point around one axis 
   
   
-  hypo=math.sqrt(a**2+b**2) # turns 2d co-ordinate into polar co-ord
+  hypo=math.sqrt(a**2+b**2) # turns 2d co-ordinate into polar co-ord 
   if a==0 and b==0:
     pheta=angli
   elif a==0 and b>0: 
-    pheta=math.pi/2 + angli 
+    pheta=math.pi/2 + angli     # idk what maths i am doing here tbf. 
   elif a==0 and b<0:
-    pheta=math.pi*1.5 +angli
+    pheta=math.pi*1.5 +angli    # probably trying to account for the old if a = 0 problem 
   elif a<0:
-    pheta=math.atan(b/a)+angli+math.pi
+    pheta=math.atan(b/a)+angli+math.pi # because we are using a to divide b here, math problems 
   else:
     pheta=math.atan(b/a)+angli      # adds the angle to rotate by 
   
@@ -32,7 +32,7 @@ def rotation(a,b,angli):    # rotates the point around one axis
 
   return(x,y)
 
-def translate(point,angler):
+def translate(point,angler): # makes a 2d coord after rotating it 3 times
 
   midway=rotation(point[0],point[2],angler[0])         # as a wise man once said just do it 3 times
   point[0]=midway[0]                                   # just for each axes/plane 
@@ -65,6 +65,8 @@ fe=0
 
 def cube():
   
+  # so i decided to sstore the variables globaly instead of having them in a parent function
+  # and passing them in... 
   global x_it
   global y_it
   global z_it
@@ -93,36 +95,36 @@ def cube():
   angle=[angle_a,angle_b,angle_c]
   angler=[angle_ar,angle_br,angle_cr]
   
-  A=[pos_x-fe,pos_y-fe,pos_z-fe]
-  B=[pos_x+fe,pos_y-fe,pos_z-fe]
-  C=[pos_x+fe,pos_y+fe,pos_z-fe]
-  D=[pos_x-fe,pos_y+fe,pos_z-fe]
-  E=[pos_x-fe,pos_y-fe,pos_z+fe]
-  F=[pos_x+fe,pos_y-fe,pos_z+fe]
-  G=[pos_x+fe,pos_y+fe,pos_z+fe]
-  H=[pos_x-fe,pos_y+fe,pos_z+fe]
-   
-  A2=translate(A,angler)
-  B2=translate(B,angler)
-  C2=translate(C,angler)
-  D2=translate(D,angler)
-  E2=translate(E,angler)
-  F2=translate(F,angler)
-  G2=translate(G,angler)
-  H2=translate(H,angler)
+  # let the teardown beguin
+  points3D = [
+  [pos_x-fe,pos_y-fe,pos_z-fe],
+  [pos_x+fe,pos_y-fe,pos_z-fe],
+  [pos_x+fe,pos_y+fe,pos_z-fe],
+  [pos_x-fe,pos_y+fe,pos_z-fe],
+  [pos_x-fe,pos_y-fe,pos_z+fe],
+  [pos_x+fe,pos_y-fe,pos_z+fe],
+  [pos_x+fe,pos_y+fe,pos_z+fe],
+  [pos_x-fe,pos_y+fe,pos_z+fe]
+  ]
   
-  print(A2,B2,C2,D2,E2,F2,G2,H2)
+  points2D = []
+  for x in points3D:
+    points2D.append(translate(x,angler))
+  
+  print(points2D)
+  """
   t.up()
   t.goto(A2[0],A2[1])
   t.down()
   t.goto(B2[0],B2[1])
   t.goto(C2[0],C2[1])
   t.goto(D2[0],D2[1])
-  t.goto(A2[0],A2[1])
+  t.goto(A2[0],A2[1])#
   t.goto(D2[0],D2[1])
   t.goto(H2[0],H2[1])
   t.goto(G2[0],G2[1])
   t.goto(F2[0],F2[1])
+  
   t.goto(E2[0],E2[1])
   t.goto(A2[0],A2[1])
   t.goto(B2[0],B2[1])
@@ -131,8 +133,20 @@ def cube():
   t.goto(C2[0],C2[1])
   t.goto(G2[0],G2[1])
   t.goto(H2[0],H2[1])
-  t.goto(E2[0],E2[1])
+  t.goto(E2[0],E2[1])""" # this is my old code, where i just did a whole bunch 
   
+  # the order that you should visit points to draw the cube 
+  sequnce = [0,1,2,3,0,3,7,6,5,4,0,1,5,6,2,6,7,4]
+  
+  t.up()
+  start = True
+  for x in sequnce:
+    t.goto(points2D[x])
+    if start:
+      t.down()
+      start = False
+      
+  # here i think i was making terative changes for each run
   m=100*math.atan(g)
   x_it+=5
   y_it+=0
