@@ -59,7 +59,12 @@ def rotate3D(point, angler):
   point[1]=midway[1]
   
   return point
-  
+
+# t = the turtle, you need to intialize the screeen for turtle and the turtle first
+# coords3D = the 3D coords for the solid you want to make a frame of
+# position = [x,y,z] of where the solid should be generated 
+# rotation = [a,b,c] of thee rotation around the objects center 
+# scale = the size the solid should be 
 def display_frame(t,coords3D, position, rotation, connections,scale=1):
     # scale all the coords first 
     points2D = []
@@ -73,7 +78,6 @@ def display_frame(t,coords3D, position, rotation, connections,scale=1):
         # reposition it  
         c = rotated
         d = [c[0]+position[0],c[1]+position[1],c[2]+position[2]]
-        coords3D[x] = d
         points2D.append([d[0],d[1]])
     
     # then we draw it 
@@ -86,4 +90,36 @@ def display_frame(t,coords3D, position, rotation, connections,scale=1):
     
     t.up()
     
+# t - still the turtle 
+# solid - dictionary for coords3D and connections 
+# axis6s - [[x,y,z],[a,b,c],s]
+def display_frame_s(t,solid, axis6s):
+    #make adjustments 
+    coords3D = solid["coords3D"]
+    connections = solid["connections"]
+    position = axis6s[0]
+    rotation = axis6s[1]
+    scale = axis6s[2]
+        # scale all the coords first 
+    points2D = []
+    # we need to rotate rotate 
+    for x in range(len(coords3D)): 
+        a = coords3D[x]
+        # scale it
+        scaled = [a[0]*scale,a[1]*scale,a[2]*scale]
+        #rotate it 
+        rotated = rotate3D(scaled,rotation)
+        # reposition it  
+        c = rotated
+        d = [c[0]+position[0],c[1]+position[1],c[2]+position[2]]
+        points2D.append([d[0],d[1]])
     
+    # then we draw it 
+    start = True
+    for x in connections:
+        t.goto(points2D[x])
+        if start:
+            t.down()
+            start = False
+    
+    t.up()
